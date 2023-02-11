@@ -1,4 +1,5 @@
 import './alias'
+import '~/utils/firebase/index'
 
 // ------------
 // https
