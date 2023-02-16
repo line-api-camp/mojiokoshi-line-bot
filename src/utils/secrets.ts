@@ -14,3 +14,4 @@ export const FB_PROJECT_ID = process.env.FB_PROJECT_ID as string
 // Stripe
 
 export const STRIPE_SECRET_KEY = String(process.env.STRIPE_SECRET_KEY)
+export const STRIPE_WEBHOOK_SECRET = String(process.env.STRIPE_WEBHOOK_SECRET)
