@@ -1,6 +1,7 @@
 import { ImageEventMessage, MessageEvent } from '@line/bot-sdk'
 import { logger } from 'firebase-functions/v1'
 
+import { minusUserPoint } from '~/domains/point-transaction.domain'
 import { getStripeCheckoutURL, getStripeCustomerIdByUserId } from '~/domains/stripe.domain'
 import { imageToText } from '~/domains/vision.domain'
 import { getInitUserData } from '~/types/models'
@@ -77,7 +78,7 @@ export const messageImageHandler = async (event: MessageEvent): Promise<void> =>
 
     // 正常に文字起こしした時
     await lineClient.replyMessage(event.replyToken, makeReplyMessage(text))
-    await updateUser(userId, { point: user.point - 1 })
+    await minusUserPoint(userId, 1)
   } catch (err) {
     errorLogger(err)
     throw new Error('message image handler')

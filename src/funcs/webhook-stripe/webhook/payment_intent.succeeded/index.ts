@@ -1,4 +1,5 @@
 import { stripeClient } from '~/clients/stripe.client'
+import { addUserPoint } from '~/domains/point-transaction.domain'
 import { getUser, updateUser } from '~/types/users'
 import { lineClient, makeReplyMessage } from '~/utils/line'
 
@@ -21,7 +22,7 @@ export const paymentIntentSucceededHandler = async ({ customerId }: Props): Prom
     }
 
     // add point.
-    await updateUser(userId, { point: user.point + 500 })
+    await addUserPoint(userId, 500)
 
     // line push
     await lineClient.pushMessage(userId, makeReplyMessage('ポイントを追加しました'))

@@ -2,7 +2,7 @@ import { FieldValue, getFirestore } from 'firebase-admin/firestore'
 
 import { User } from '../models'
 
-const usersRef = getFirestore().collection('users')
+export const usersRef = getFirestore().collection('users')
 
 export const createUser = async (userId: string, user: User): Promise<User> => {
   const newUser = {
