@@ -4,7 +4,7 @@ import { logger } from 'firebase-functions/v1'
 import { getStripeCheckoutURL, getStripeCustomerIdByUserId } from '~/domains/stripe.domain'
 import { imageToText } from '~/domains/vision.domain'
 import { getInitUserData } from '~/types/models'
-import { createUser, getUser } from '~/types/users'
+import { createUser, getUser, updateUser } from '~/types/users'
 import { lineClient, makeReplyMessage } from '~/utils/line'
 import { errorLogger } from '~/utils/util'
 
@@ -48,7 +48,7 @@ export const messageImageHandler = async (event: MessageEvent): Promise<void> =>
       const stripeCustomer = await getStripeCustomerIdByUserId(userId)
 
       // get url
-      const url = await getStripeCheckoutURL({
+      const { url } = await getStripeCheckoutURL({
         stripeCustomer,
         priceId: 'price_1Mc81lJFOEpiCtQrTR7XEtSz',
         mode: 'payment'
@@ -66,14 +66,18 @@ export const messageImageHandler = async (event: MessageEvent): Promise<void> =>
     const buffer = await messageIdToBuffer(messageId)
     const text = await imageToText(buffer)
 
+    // 文字起こしできなかった場合
     if (text === null) {
       await lineClient.replyMessage(
         event.replyToken,
         makeReplyMessage('文字起こしできませんでした。')
       )
-    } else {
-      await lineClient.replyMessage(event.replyToken, makeReplyMessage(text))
+      return
     }
+
+    // 正常に文字起こしした時
+    await lineClient.replyMessage(event.replyToken, makeReplyMessage(text))
+    await updateUser(userId, { point: user.point - 1 })
   } catch (err) {
     errorLogger(err)
     throw new Error('message image handler')
