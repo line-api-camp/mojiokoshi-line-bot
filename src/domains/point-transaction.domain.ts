@@ -29,7 +29,7 @@ export const minusUserPoint = async (userId: string, point: number): Promise<voi
     }
     const user = { id: snapshot.id, ...snapshot.data() } as User
 
-    if (user.point - point <= 0) {
+    if (user.point - point < 0) {
       throw new Error('ポイントがありません。')
     }
 
