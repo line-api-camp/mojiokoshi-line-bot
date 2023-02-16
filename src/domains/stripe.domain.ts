@@ -1,14 +1,16 @@
 import { Stripe } from 'stripe'
 
 import { stripeClient } from '~/clients/stripe.client'
+import { getUser, updateUser } from '~/types/users'
+import { lineClient } from '~/utils/line'
 
-type SinglePayment = {
+type CheckoutURLProps = {
   stripeCustomer: string
   priceId: string
   mode: Stripe.Checkout.SessionCreateParams.Mode
 }
 
-export const getStripeCheckoutURL = async (props: SinglePayment): Promise<{ url: string }> => {
+export const getStripeCheckoutURL = async (props: CheckoutURLProps): Promise<{ url: string }> => {
   const { stripeCustomer, priceId, mode } = props
 
   try {
@@ -36,4 +38,34 @@ export const getStripeCheckoutURL = async (props: SinglePayment): Promise<{ url:
     console.error('getCheckoutURLBySinglePayment func.')
     throw Error
   }
+}
+
+export const getStripeCustomerIdByUserId = async (userId: string): Promise<string> => {
+  const user = await getUser(userId)
+  if (user === null) {
+    throw new Error('user is not found.')
+  }
+
+  if (user.stripeCustomerId) {
+    return user.stripeCustomerId
+  }
+
+  return await createStripeCustomerByUserId(userId)
+}
+
+export const createStripeCustomerByUserId = async (userId: string): Promise<string> => {
+  const { displayName } = await lineClient.getProfile(userId).catch(() => {
+    return { displayName: '' }
+  })
+
+  const newCustomer = await stripeClient.customers.create({
+    name: displayName || userId,
+    description: userId,
+    metadata: {
+      userId
+    }
+  })
+  await updateUser(userId, { stripeCustomerId: newCustomer.id })
+
+  return newCustomer.id
 }

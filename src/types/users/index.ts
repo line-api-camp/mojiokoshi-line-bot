@@ -4,12 +4,15 @@ import { User } from '../models'
 
 const usersRef = getFirestore().collection('users')
 
-export const createUser = async (userId: string, user: User): Promise<void> => {
-  await usersRef.doc(userId).create({
+export const createUser = async (userId: string, user: User): Promise<User> => {
+  const newUser = {
     ...user,
     createdAt: FieldValue.serverTimestamp(),
     updatedAt: FieldValue.serverTimestamp()
-  } as Partial<User>)
+  } as User
+  await usersRef.doc(userId).create(newUser)
+
+  return newUser
 }
 
 export const getUser = async (userId: string): Promise<User | null> => {
@@ -17,7 +20,7 @@ export const getUser = async (userId: string): Promise<User | null> => {
   return snapshot.exists ? ({ id: snapshot.id, ...snapshot.data() } as User) : null
 }
 
-export const updateUser = async (userId: string, user: User): Promise<void> => {
+export const updateUser = async (userId: string, user: Partial<User>): Promise<void> => {
   await usersRef.doc(userId).update({
     ...user,
     updatedAt: FieldValue.serverTimestamp()

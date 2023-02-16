@@ -8,10 +8,12 @@ interface Base {
 
 export interface User extends Base {
   point: number
+  stripeCustomerId: string
 }
 
-export const initUserData = (): User => {
+export const getInitUserData = (): User => {
   return {
-    point: 0
+    point: 0,
+    stripeCustomerId: ''
   }
 }
