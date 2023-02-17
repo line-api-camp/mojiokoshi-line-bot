@@ -24,8 +24,8 @@ export const getStripeCheckoutURL = async (props: CheckoutURLProps): Promise<{ u
       ],
       payment_method_types: ['card'],
       mode,
-      success_url: 'https://twitter.com/hyodoblog',
-      cancel_url: 'https://twitter.com/hyodoblog'
+      success_url: 'https://lin.ee/F2H8dsW',
+      cancel_url: 'https://lin.ee/F2H8dsW'
     })
 
     if (url === null) {
