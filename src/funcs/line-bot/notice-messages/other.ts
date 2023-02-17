@@ -5,6 +5,11 @@ export const msgOther: TextMessage = {
   text: 'テキスト以外のメッセージを受信しました'
 }
 
+export const msgNotText: TextMessage = {
+  type: 'text',
+  text: '画像の中にテキストが見つかりませんでした。'
+}
+
 export const msgError: FlexMessage = {
   type: 'flex',
   altText: 'エラーが発生しました',
