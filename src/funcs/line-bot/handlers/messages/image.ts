@@ -2,6 +2,7 @@ import { ImageEventMessage, MessageEvent } from '@line/bot-sdk'
 
 import { lineClient } from '~/clients/line.client'
 import { getMessageContentWithBuffer } from '~/domains/line.domain'
+import { getStripeCheckoutURL, getStripeCustomerIdByUserId } from '~/domains/stripe.domain'
 import { getUserByUserId } from '~/domains/user.domain'
 import { imageToText } from '~/domains/vision.domain'
 import { makeReplyMessage } from '~/utils/line.util'
@@ -15,6 +16,20 @@ export const messageImageHandler = async (event: MessageEvent): Promise<void> =>
     const { id: messageId } = event.message as ImageEventMessage
 
     const user = await getUserByUserId(userId)
+
+    if (user.point <= 0) {
+      const stripeCustomerId = await getStripeCustomerIdByUserId(userId)
+      const { url } = await getStripeCheckoutURL({
+        stripeCustomer: stripeCustomerId,
+        priceId: 'price_1Mc81lJFOEpiCtQrTR7XEtSz',
+        mode: 'payment'
+      })
+      await lineClient.replyMessage(
+        event.replyToken,
+        makeReplyMessage(`ポイントが足りません。\n決済はこちらからお願いします。\n\n${url}`)
+      )
+      return
+    }
 
     const imageBuffer = await getMessageContentWithBuffer(messageId)
     let text = await imageToText(imageBuffer)
