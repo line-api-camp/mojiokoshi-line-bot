@@ -3,6 +3,7 @@
     "predeploy": ["yarn --cwd \"$RESOURCE_DIR\" build"],
     "source": ".",
     "ignore": [
+      "**/.env.*",
       "**/.prettier*",
       "**/.gitignore",
       "**/.runtimeconfig*",

@@ -19,8 +19,7 @@
     "paths": {
       "~/*": ["./src/*"],
       "~lineBot/*": ["./src/funcs/line-bot/*"]
-    },
-    "types": ["@types/node"]
+    }
   },
   "exclude": ["dist", "node_modules"],
   "include": ["src"],
