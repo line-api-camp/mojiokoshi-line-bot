@@ -20,6 +20,13 @@ export const getUserDb = async (userId: string): Promise<User | null> => {
   return snapshot.exists ? ({ id: snapshot.id, ...snapshot.data() } as User) : null
 }
 
+export const getUsersByIsActive = async (isActive: boolean): Promise<User[]> => {
+  const snapshots = await usersRef.where('isActive', '==', isActive).get()
+  return snapshots.docs.map((doc) => {
+    return { id: doc.id, ...doc.data() } as User
+  })
+}
+
 export const updateUserDb = async (userId: string, user: Partial<User>): Promise<void> => {
   await usersRef.doc(userId).update({
     ...user,
