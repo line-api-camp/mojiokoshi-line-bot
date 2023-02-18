@@ -7,12 +7,14 @@ interface Base {
 }
 
 export interface User extends Base {
+  isActive: boolean
   stripeCustomerId: string
   point: number
 }
 
 export const getUserInitData = (initialPoint = 500): User => {
   return {
+    isActive: false,
     stripeCustomerId: '',
     point: initialPoint
   }
