@@ -2,7 +2,7 @@ import { Stripe } from 'stripe'
 
 import { lineClient } from '~/clients/line.client'
 import { stripeClient } from '~/clients/stripe.client'
-import { getRichMenuId } from '~/domains/rich-menu.domain'
+import { getRichMenuId } from '~/domains/richmenu.domain'
 import { getUserByUserId } from '~/domains/user.domain'
 import { updateUserDb } from '~/libs/firebase/firestore/user'
 import { makeReplyMessage } from '~/utils/line.util'
